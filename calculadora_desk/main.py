@@ -65,12 +65,14 @@ def operar(op="="):
             etiqueta = ''
             ingreso.delete(0, tk.END)
             ingreso.insert(tk.INSERT, str(resultado))
+            calcular.config(state=tk.DISABLED)
             
     else:        
         numero_1.set(float(ingreso.get()))                
         op_func.set(op)
         ingreso.delete(0, tk.END)
         etiqueta = str(numero_1.get()) + op
+        calcular.config(state=tk.NORMAL)
     
     operacion.config(text=etiqueta)
 
@@ -178,8 +180,8 @@ calcular = tk.Button(ventana,
                      text='=', 
                      width=5, 
                      font=font.Font(family="Arial", size=15), 
-                     command=partial(operar, '='))
-calcular.bind("<Return>", operar)
+                     command=partial(operar, '='),
+                     state=tk.DISABLED)
 calcular.grid(row=6, column=2, pady=3, padx=1)
 
 negativo = tk.Button(text='±', 
@@ -198,4 +200,12 @@ barra_menu.add_cascade(label="Acerca de...", menu=info)
 
 ventana.title("Calculadora")
 ventana.config(menu=barra_menu)
+
+# Para "escuchar" operaciones desde el teclado
+def operar_teclado(event):
+    if event.char in ('+', '-', '*', '/'):
+        operar(event.char)
+
+ventana.bind('<Key>', operar_teclado)
+
 ventana.mainloop()
